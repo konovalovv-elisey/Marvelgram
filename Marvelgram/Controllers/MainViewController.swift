@@ -29,8 +29,6 @@ class MainViewController: UIViewController {
     
     private var isFiltred = false
     private var filtredArray = [IndexPath]()
-
-
     
     //MARK: - viewDidLoad
     
@@ -76,7 +74,7 @@ class MainViewController: UIViewController {
         searchController.searchResultsUpdater = self
         searchController.delegate = self
     }
-   
+    
     private func getHeroesArray() {
         
         NetworkDataFetch.shared.fatchHero { [weak self] heroMarvelArray, error in
@@ -99,7 +97,7 @@ class MainViewController: UIViewController {
     }
     
     private func createCustomTitleView() -> UIView {
-
+        
         let view = UIView()
         let heightNavBar = navigationController?.navigationBar.frame.height ?? 0
         let widthNavBar = navigationController?.navigationBar.frame.width ?? 0
@@ -144,7 +142,9 @@ extension MainViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        cell.alpha = (filtredArray.contains(indexPath) ? 1 : 0.3)
+        if isFiltred {
+            cell.alpha = (filtredArray.contains(indexPath) ? 1 : 0.3)
+        }
     }
 }
 
@@ -164,15 +164,15 @@ extension MainViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text else { return }
-        filterContentForSearchText(_searchText: text)
+        filterContentForSearchText(text)
     }
     
-    private func filterContentForSearchText( _searchText: String) {
+    private func filterContentForSearchText(_ searchText: String) {
         for (value, hero) in heroesArray.enumerated() {
             let indexPath: IndexPath = [0, value]
             let cell = heroCollectionView.cellForItem (at: indexPath)
             
-            if hero.name.lowercased().contains( _searchText.lowercased()) {
+            if hero.name.lowercased().contains(searchText.lowercased()) {
                 filtredArray.append(indexPath)
                 cell?.alpha = 1
             } else {
@@ -185,7 +185,7 @@ extension MainViewController: UISearchResultsUpdating {
 //MARK: - UISearchControllerDelegate
 
 extension MainViewController: UISearchControllerDelegate {
-  
+    
     func didPresentSearchController(_ searchController: UISearchController) {
         isFiltred = true
         setAlphaForCell(alpha: 0.3)

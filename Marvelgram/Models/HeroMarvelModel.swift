@@ -29,7 +29,7 @@ extension HeroMarvelModel: Hashable {
     static func == (lhs: HeroMarvelModel, rhs: HeroMarvelModel) -> Bool {
         return lhs.id == rhs.id
     }
-
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
